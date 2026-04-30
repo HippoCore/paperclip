@@ -27,7 +27,7 @@ if [ ! -f "$CONFIG_PATH" ]; then
 import json
 config = {
     '\$meta': {'version': 1, 'source': 'onboard', 'updatedAt': '2026-01-01T00:00:00.000Z'},
-    'database': {'mode': 'embedded-postgres'},
+    'database': {'mode': 'embedded-pos'database': {'mode': 'postgres', 'connectionString': 'postgresql://paperclip_db_qyea_user:LOUkSK2IfLvUZ46aMWdPe3dHRlSCxkY1@dpg-d7ptelpugtpc73af9fv0-a/paperclip_db_qyea'},tgres'},
     'logging': {'mode': 'file'},
     'server': {'deploymentMode': 'authenticated', 'exposure': 'private'},
     'auth': {}, 'telemetry': {}, 'storage': {}, 'secrets': {}
