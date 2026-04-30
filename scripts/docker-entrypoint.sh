@@ -37,8 +37,11 @@ print(json.dumps(config, indent=2))
     chown node:node "$CONFIG_PATH"
 fi
 
-echo "--- Paperclip bootstrap starting ---"
-gosu node node --import ./server/node_modules/tsx/dist/loader.mjs cli/src/index.js auth bootstrap-ceo 2>&1 || true
-echo "--- Paperclip bootstrap complete ---"
+(
+    sleep 15
+    echo "--- Paperclip bootstrap starting ---"
+    gosu node node --import ./server/node_modules/tsx/dist/loader.mjs cli/src/index.js auth bootstrap-ceo 2>&1 || true
+    echo "--- Paperclip bootstrap complete ---"
+) &
 
 exec gosu node "$@"
