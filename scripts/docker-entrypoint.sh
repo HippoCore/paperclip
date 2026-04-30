@@ -30,7 +30,7 @@ if [ ! -f "$CONFIG_PATH" ]; then
     echo "--- Creating config ---"
     cat > "$CONFIG_PATH" <<EOF
 {
-  "\$meta": { "version": 1, "source": "onboard" },
+  "\$meta": { "version": 1, "source": "\$meta": { "version": 1, "source": "onboard", "updatedAt": "2026-01-01T00:00:00.000Z" },"onboard" },
   "database": { "mode": "embedded-postgres" },
   "logging": { "mode": "file" },
   "server": { "deploymentMode": "authenticated", "exposure": "private" },
