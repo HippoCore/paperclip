@@ -1,29 +1,33 @@
 #!/bin/sh
 set -e
 
+# Always ensure /paperclip exists and is writable
+mkdir -p /paperclip/instances/default/logs
+mkdir -p /paperclip/instances/default/data
+mkdir -p /paperclip/instances/default/data/backups
+mkdir -p /paperclip/instances/default/db
+chown -R node:node /paperclip
+chmod -R 755 /paperclip
+
+# Handle UID/GID remapping
 PUID=${USER_UID:-1000}
 PGID=${USER_GID:-1000}
 
-changed=0
 if [ "$(id -u node)" -ne "$PUID" ]; then
-    echo "Updating node UID to $PUID"
     usermod -o -u "$PUID" node
-    changed=1
 fi
 if [ "$(id -g node)" -ne "$PGID" ]; then
-    echo "Updating node GID to $PGID"
     groupmod -o -g "$PGID" node
     usermod -g "$PGID" node
-    changed=1
-fi
-if [ "$changed" = "1" ]; then
-    chown -R node:node /paperclip
 fi
 
+# Re-apply ownership after any UID/GID changes
+chown -R node:node /paperclip
+
+# Create config if it does not exist
 CONFIG_PATH="/paperclip/instances/default/config.json"
 if [ ! -f "$CONFIG_PATH" ]; then
     echo "--- Creating config ---"
-    mkdir -p "$(dirname "$CONFIG_PATH")"
     cat > "$CONFIG_PATH" <<EOF
 {
   "\$meta": { "version": 1, "source": "onboard" },
@@ -33,8 +37,10 @@ if [ ! -f "$CONFIG_PATH" ]; then
   "auth": {}, "telemetry": {}, "storage": {}, "secrets": {}
 }
 EOF
+    chown node:node "$CONFIG_PATH"
 fi
 
+# Run bootstrap to generate admin invite URL
 echo "--- Paperclip bootstrap starting ---"
 gosu node node --import ./server/node_modules/tsx/dist/loader.mjs cli/src/index.js auth bootstrap-ceo 2>&1 || true
 echo "--- Paperclip bootstrap complete ---"
